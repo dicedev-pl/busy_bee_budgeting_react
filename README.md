@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# Busy Bee Budgeting 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is Frontend application written in React, for coding course purpouse [Busy Bee Budgeting ](https://dicedev.pl/pierwsze-zadanie-junior-java-developera) in Polish.
+
+[Course repository](https://github.com/dicedev-pl/BusyBeeBudgeting).
 
 ## Available Scripts
 
