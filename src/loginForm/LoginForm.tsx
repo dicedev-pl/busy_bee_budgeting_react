@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Button, Form, FormProps, Input, Checkbox } from "antd";
+import {Button, Form, FormProps, Input, Checkbox} from "antd";
 
 function LoginForm() {
     const [addingUser, setAddingUser] = useState(false)
@@ -10,13 +10,30 @@ function LoginForm() {
     };
 
     const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-        console.log('Success:', values);
+        if (addingUser) {
+            console.log('Adding User:', values);
+            fetch('http://localhost:8080/auth', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+        },
+                body: JSON.stringify({
+                    "username": values.username,
+                    "password": values.password
+                })
+            })
+        } else {
+            console.log('Success:', values);
+        }
     };
 
     const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
+    const addUser = (values: React.MouseEvent<HTMLButtonElement>) => {
+        console.log('addUser:', values);
+    }
 
     return (
         <Form
