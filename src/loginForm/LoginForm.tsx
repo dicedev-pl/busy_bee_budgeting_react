@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Form, FormProps, Input, Checkbox} from "antd";
+import {Button, Checkbox, Form, FormProps, Input} from "antd";
 
 function LoginForm() {
     const [addingUser, setAddingUser] = useState(false)
@@ -16,14 +16,28 @@ function LoginForm() {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
-        },
+                },
                 body: JSON.stringify({
                     "username": values.username,
                     "password": values.password
                 })
-            })
+            }).then(response => response.json())
+                .then(date => console.log(date))
+                .catch(err => console.error(err))
         } else {
             console.log('Success:', values);
+            fetch('http://localhost:8080/auth/token', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "username": values.username,
+                    "password": values.password
+                })
+            }).then(response => response.json())
+                .then(data => localStorage.setItem("jwtToken", data.jwtToken))
+                .catch(err => console.error(err))
         }
     };
 
