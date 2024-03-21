@@ -1,18 +1,16 @@
 import React from 'react';
-import logo from './bbb_logo.svg';
 import './App.css';
-import LoginForm from "./loginForm/LoginForm";
+import MainView from "./mainView/MainView";
 
-function App() {
+const App = () => {
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={ logo } className="App-logo" alt="logo" />
-        <LoginForm />
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <header className="App-header">
+                <MainView/>
+            </header>
+        </div>
+    );
 }
 
 export default App;

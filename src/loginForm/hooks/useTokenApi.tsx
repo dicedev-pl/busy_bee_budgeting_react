@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 
 type ValuesType = {
     username?: string;
@@ -7,12 +7,14 @@ type ValuesType = {
 
 const useTokenApi = (): {
     error: boolean;
-    getTokenForUser(values: ValuesType): void;
+    saved: boolean;
+    getTokenForUser(values: ValuesType, setUserToken: (value: string) => void): void;
     saveNewUser(values: ValuesType): void;
 } => {
     const [error, setError] = useState(false)
+    const [saved, setSaved] = useState(false)
 
-    const getTokenForUser = (values: ValuesType) => {
+    const getTokenForUser = (values: ValuesType, setUserToken: (value: string) => void) => {
         fetch('http://localhost:8080/auth/token', {
             method: 'POST',
             headers: {
@@ -29,10 +31,10 @@ const useTokenApi = (): {
             }
             return response.json()
         })
-            .then(data => localStorage.setItem("jwtToken", data.jwtToken))
+            .then(data => setUserToken("Bearer " + data.jwtToken))
             .catch(err => {
-                console.error(err)
-                setError(true)
+                console.error(err);
+                setError(true);
             })
     }
 
@@ -51,6 +53,7 @@ const useTokenApi = (): {
                 setError(true);
                 return;
             }
+            setSaved(true);
             return response.json()
         })
             .catch(err => {
@@ -59,7 +62,7 @@ const useTokenApi = (): {
             })
     }
 
-    return {error, getTokenForUser, saveNewUser}
+    return {error, saved, getTokenForUser, saveNewUser}
 
 }
 
