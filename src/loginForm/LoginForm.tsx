@@ -2,9 +2,13 @@ import React, {useState} from "react";
 import {Alert, Button, Checkbox, Form, FormProps, Input, Space} from "antd";
 import useTokenApi from "./hooks/useTokenApi";
 
-function LoginForm() {
+interface ILoginForm {
+    setUserToken(value: string): void;
+}
+
+const LoginForm = (props: ILoginForm) => {
     const [addingUser, setAddingUser] = useState(false)
-    const {error, saveNewUser, getTokenForUser} = useTokenApi();
+    const {error, saved, saveNewUser, getTokenForUser} = useTokenApi();
 
     type FieldType = {
         username?: string;
@@ -13,17 +17,14 @@ function LoginForm() {
 
     const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
         if (addingUser) {
-            console.log('Adding User:', values);
             saveNewUser(values);
         } else {
-            console.log('Success:', values);
-            getTokenForUser(values);
+            getTokenForUser(values, props.setUserToken);
         }
     };
 
     const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
         console.log('Failed:', errorInfo);
-        console.log(error);
     };
 
     return (
@@ -33,6 +34,11 @@ function LoginForm() {
                     <div>
                         <Alert message="Wystąpił problem z użytkownikiem" type="error"/>
                         <Alert message="Może już istnieje - sprawdź logi BE" type="error"/>
+                    </div>
+                }
+                {saved &&
+                    <div>
+                        <Alert message="Użytkownik dodany" type="success"/>
                     </div>
                 }
                 <Form

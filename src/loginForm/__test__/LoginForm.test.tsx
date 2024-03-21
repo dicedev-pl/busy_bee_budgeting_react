@@ -9,8 +9,10 @@ describe("login form", () => {
             addListener: jest.fn(),
             removeListener: jest.fn(),
         }));
+        const token = (value: string): void => {
+        }
 
-        render(<LoginForm/>);
+        render(<LoginForm setUserToken={token}/>);
         const loginInput = screen.getByLabelText('Username')
         const passwordInput = screen.getByLabelText('Password')
 
