@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import MainDashboard from "../mainDashboard/mainDashboard";
 
 const MainView = () => {
-    const [userToken, setUserToken] = useState("");
+    const [userToken, setUserToken] = useState("a");
 
     return (
         (!userToken &&
