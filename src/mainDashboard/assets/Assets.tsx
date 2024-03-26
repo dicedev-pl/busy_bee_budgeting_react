@@ -1,14 +1,12 @@
-import {Table, Tag} from 'antd';
-import React from 'react';
+import {Button, Table, Tag} from 'antd';
+import {PlusOutlined} from '@ant-design/icons';
+import React, {useState} from 'react';
+import {AssetsCategory} from "./enums";
+import './Assets.css'
+import AddAssets from "./add/AddAssets";
 
 
-enum AssetsCategory {
-    SALARY,
-    BONUS,
-    LOAN_RETURNED,
-    RENT,
-    OTHER,
-}
+const {Column} = Table;
 
 interface DataType {
     key: React.Key;
@@ -18,9 +16,8 @@ interface DataType {
     category: AssetsCategory;
 }
 
-const {Column, ColumnGroup} = Table;
-
 const Assets = () => {
+    const [addView, setAddView] = useState(false)
 
     const data: DataType[] = [
         {
@@ -47,27 +44,39 @@ const Assets = () => {
     ];
 
 
+    const gotoAddView = () => {
+        setAddView(true);
+    }
+
     return (
-        <div>
-            <Table dataSource={data}>
-                <Column title="Kategoria" dataIndex="category" key="category"
-                        render={(category) => {
-                            let color = 'green';
-                            if (category === 1) color = 'blue';
-                            if (category === 2) color = 'grey';
-                            if (category === 3) color = 'lightblue';
-                            if (category === 4) color = 'red';
-                            return (
-                                <Tag color={color} key={category}>
-                                    {AssetsCategory[category]}
-                                </Tag>
-                            );
-                        }}
-                />
-                <Column title="Kwota" dataIndex="amount" key="amount"/>
-                <Column title="Data" dataIndex="incomeDate" key="date"/>
-            </Table>
-        </div>
+        (!addView &&
+            <>
+                <Button type="primary" onClick={gotoAddView} icon={<PlusOutlined/>}>
+                    Dodaj
+                </Button>
+                <Table dataSource={data}>
+                    <Column title="Kategoria" dataIndex="category" key="category"
+                            render={(category) => {
+                                let color = 'green';
+                                if (category === 1) color = 'blue';
+                                if (category === 2) color = 'grey';
+                                if (category === 3) color = 'lightblue';
+                                if (category === 4) color = 'red';
+                                return (
+                                    <Tag color={color} key={category}>
+                                        {AssetsCategory[category]}
+                                    </Tag>
+                                );
+                            }}
+                    />
+                    <Column title="Kwota" dataIndex="amount" key="amount"/>
+                    <Column title="Data" dataIndex="incomeDate" key="date"/>
+                </Table>
+            </>) || (
+            <>
+                <AddAssets/>
+            </>
+        )
     )
 }
 

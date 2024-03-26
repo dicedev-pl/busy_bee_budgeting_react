@@ -3,6 +3,7 @@ import {Layout, Menu} from 'antd';
 import React, {useState} from "react";
 import mini_logo from "../bbb_mini_logo.svg";
 import Assets from "./assets/Assets";
+import Expenses from "./expenses/Expenses";
 
 
 const {Header, Content, Sider, Footer} = Layout;
@@ -42,7 +43,8 @@ const MainDashboard = () => {
                         padding: 24,
                         minHeight: 360,
                     }}>
-                        {currentView === 'assets' && <Assets />}
+                        {currentView === 'assets' && <Assets/>}
+                        {currentView === 'expenses' && <Expenses/>}
                     </div>
                 </Content>
             </Layout>
