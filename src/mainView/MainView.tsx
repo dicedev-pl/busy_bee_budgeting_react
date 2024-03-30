@@ -1,4 +1,4 @@
-import logo from "../bbb_logo.svg";
+import logo from "../images/bbb_logo.svg";
 import LoginForm from "../loginForm/LoginForm";
 import React, {useState} from "react";
 import MainDashboard from "../mainDashboard/mainDashboard";
