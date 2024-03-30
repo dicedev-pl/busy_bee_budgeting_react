@@ -1,7 +1,7 @@
 import './mainDashboard.css';
 import {Layout, Menu} from 'antd';
 import React, {useState} from "react";
-import mini_logo from "../bbb_mini_logo.svg";
+import mini_logo from "../images/bbb_mini_logo.svg";
 import Assets from "./assets/Assets";
 import Expenses from "./expenses/Expenses";
 
