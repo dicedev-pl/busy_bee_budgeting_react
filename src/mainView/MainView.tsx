@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import MainDashboard from "../mainDashboard/mainDashboard";
 
 const MainView = () => {
-    const [userToken, setUserToken] = useState("a");
+    const [userToken, setUserToken] = useState("");
 
     return (
         (!userToken &&
@@ -16,7 +16,7 @@ const MainView = () => {
             </header>
         ) || (
             <div>
-                <MainDashboard/>
+                <MainDashboard userToken={userToken}/>
             </div>
         )
     );

@@ -16,7 +16,7 @@ interface DataType {
     category: AssetsCategory;
 }
 
-const Assets = () => {
+const Assets: React.FC<{ userToken: string }> = ({userToken}) => {
     const [addView, setAddView] = useState(false)
 
     const data: DataType[] = [
@@ -74,7 +74,7 @@ const Assets = () => {
                 </Table>
             </>) || (
             <>
-                <AddAssets/>
+                <AddAssets userToken={userToken} />
             </>
         )
     )

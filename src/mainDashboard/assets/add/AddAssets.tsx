@@ -1,89 +1,98 @@
-import {Button, DatePicker, Input, Layout, Table} from 'antd';
-import React, {useState} from "react";
+import {Button, DatePicker, Form, FormProps, Input, Space} from 'antd';
+import React from "react";
 import {AssetsCategory} from "../enums";
 import dayjs from "dayjs";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import useEnumToOption from "../../../hooks/useEnumToOption";
+import useAddAssets from "./hooks/useAddAssets";
+import {AssetsDto} from "../AssetsModels";
 
-const {Header, Content, Footer} = Layout;
 
-type AssetsTableSource = {
-    key: string
-}
-
-const AddAssets = () => {
-    const [rowNumber, setRowNumber] = useState<number>(0);
-    const [assetsSourceAdd, setAssetsSourceAdd] = useState<AssetsTableSource[]>([{
-        key: `0`
-    }])
+const AddAssets: React.FC<{ userToken: string }> = ({userToken}) => {
+    const [form] = Form.useForm<AssetsDto>()
     const {formattedAntOption} = useEnumToOption();
+    const {saved, error, saveAssets} = useAddAssets();
 
-    const onClickAddRow = () => {
-        setRowNumber(rowNumber + 1);
-        setAssetsSourceAdd([...assetsSourceAdd, {key: `${rowNumber + 1}`}]);
+    const onFinish = (formData: FormProps) => {
+        saveAssets(formData, userToken);
     }
 
-    const onClickDeleteRow = (key: string) => {
-        setAssetsSourceAdd(oldAssetsSourceAdd => {
-            return oldAssetsSourceAdd.filter(a => a.key !== key)
-        });
+    const onOk = (a: FormProps) => {
+        form.setFieldValue("incomeDate", a.name);
     }
-
-    const assetsColumns = [
-        {
-            title: "Kategoria",
-            dataIndex: "category",
-            render: (_, row) => {
-                return (formattedAntOption(AssetsCategory))
-            }
-        }, {
-            title: "Kwota",
-            dataIndex: "amount",
-            render: (_, row) => {
-                return (<>
-                    <Input defaultValue="0.00" style={{width: '100%'}}/>
-                </>)
-            }
-        }, {
-            title: "Data",
-            dataIndex: "assetsDate",
-            render: (_, row) => {
-                return (<>
-                    <DatePicker
-                        format="YYYY-MM-DD HH:mm:ss"
-                        showTime={{defaultValue: dayjs('00:00:00', 'HH:mm:ss')}}
-                        style={{width: 180}}
-                        onOk={(e) => console.log(e)}
-                    />
-                </>)
-            }
-        }, {
-            title: "Akcje",
-            dataIndex: "actions",
-            render: (_, row) => {
-                return (<>
-                    <Button danger icon={<MinusCircleOutlined/>} onClick={() => onClickDeleteRow(row.key)}/>
-                </>)
-            }
-        }
-    ];
 
     return (
-        <Layout>
-            <Header>
-                <Button type="primary" icon={<PlusOutlined/>} onClick={onClickAddRow}>
-                    Dodaj nowy przychód
-                </Button>
-            </Header>
-            <Content style={{margin: '10px'}}>
-                <Table columns={assetsColumns} dataSource={assetsSourceAdd}/>
-            </Content>
-            <Footer>
-                <Button type="primary" icon={<PlusOutlined/>} onClick={onClickAddRow}>
+        <>
+            <Form onFinish={onFinish} {...form}>
+                <Form.List name={"assetsList"}>
+                    {(fields, {add, remove}) => (
+                        <>
+                            {fields.map((field, idx) => {
+                                return (
+                                    <Space key={field.key} direction="horizontal" size={12} style={{}}>
+                                        <Form.Item name={[field.name, "category"]} label={`${idx + 1}`}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: "Podaj Kategorię"
+                                                       }
+                                                   ]}>
+                                            {formattedAntOption(AssetsCategory)}
+                                        </Form.Item>
+                                        <Form.Item name={[field.name, "amount"]} rules={[
+                                            {
+                                                required: true,
+                                                message: "Niepoprawna kwota"
+                                            },
+                                            {
+                                                pattern: RegExp("^\\d+(\\.\\d+)?$"),
+                                                message: "Poprawny format: 123.34 (cyfry kropka cyfry)"
+                                            }
+                                        ]}>
+                                            <Input placeholder="Kwota przychodu"/>
+                                        </Form.Item>
+                                        <Form.Item name={[field.name, "incomeDate"]}
+                                                   rules={[
+                                                       {
+                                                           required: true,
+                                                           message: "Wprowadź kwotę"
+                                                       }
+                                                   ]}>
+                                            <DatePicker
+                                                format="YYYY-MM-DD HH:mm:ss"
+                                                showTime={{defaultValue: dayjs('00:00:00', 'HH:mm:ss')}}
+                                                style={{width: 180}}
+                                                onOk={onOk}
+                                            />
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <MinusCircleOutlined style={{height: 40, color: "red"}}
+                                                                 onClick={() => remove(field.name)}/>
+                                        </Form.Item>
+                                    </Space>
+                                )
+                            })}
+                            <Form.Item>
+                                <Button type="primary" icon={<PlusOutlined/>} onClick={() => add()}
+                                        style={{
+                                            position: 'absolute',
+                                        }}>
+                                    Dodaj nowy przychód
+                                </Button>
+                            </Form.Item>
+                        </>
+                    )}
+                </Form.List>
+                <Button type="primary" icon={<PlusOutlined/>} htmlType="submit"
+                        style={{
+                            position: 'relative',
+                            left: '10px'
+                        }}>
                     Zapisz
                 </Button>
-            </Footer>
-        </Layout>
+            </Form>
+
+        </>
     )
 }
 
