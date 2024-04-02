@@ -8,7 +8,7 @@ import Expenses from "./expenses/Expenses";
 
 const {Header, Content, Sider, Footer} = Layout;
 
-const MainDashboard = () => {
+const MainDashboard: React.FC<{ userToken: string }> = ({userToken}) => {
     const [currentView, setCurrentView] = useState("assets");
 
     const items = [{
@@ -43,7 +43,7 @@ const MainDashboard = () => {
                         padding: 24,
                         minHeight: 360,
                     }}>
-                        {currentView === 'assets' && <Assets/>}
+                        {currentView === 'assets' && <Assets userToken={userToken}/>}
                         {currentView === 'expenses' && <Expenses/>}
                     </div>
                 </Content>
