@@ -5,3 +5,11 @@ export enum AssetsCategory {
     RENT,
     OTHER,
 }
+
+export enum AssetsCategoryMessage {
+    SALARY = "wynagrodzenie",
+    BONUS = "bonus",
+    LOAN_RETURNED = "zwrot pożyczki",
+    RENT = "wynajem",
+    OTHER = "inne",
+}

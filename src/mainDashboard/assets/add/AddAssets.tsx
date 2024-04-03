@@ -1,20 +1,24 @@
-import {Button, DatePicker, Form, FormProps, Input, Space} from 'antd';
+import {Alert, Button, DatePicker, Form, FormProps, Input, Space} from 'antd';
 import React from "react";
 import {AssetsCategory} from "../enums";
 import dayjs from "dayjs";
-import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import {CaretLeftOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import useEnumToOption from "../../../hooks/useEnumToOption";
-import useAddAssets from "./hooks/useAddAssets";
+import useAddAssets from "../hooks/useAddAssets";
 import {AssetsDto} from "../AssetsModels";
 
-
-const AddAssets: React.FC<{ userToken: string }> = ({userToken}) => {
+const AddAssets: React.FC<{ userToken: string, setMainView(): void }> = ({userToken, setMainView}) => {
     const [form] = Form.useForm<AssetsDto>()
     const {formattedAntOption} = useEnumToOption();
     const {saved, error, saveAssets} = useAddAssets();
 
     const onFinish = (formData: FormProps) => {
         saveAssets(formData, userToken);
+        setMainView();
+    }
+
+    const goBack = () => {
+        setMainView();
     }
 
     const onOk = (a: FormProps) => {
@@ -23,6 +27,24 @@ const AddAssets: React.FC<{ userToken: string }> = ({userToken}) => {
 
     return (
         <>
+            {error &&
+                <div>
+                    <Alert message="Wystąpił problem" type="error"/>
+                    <Alert message="Sprawdź logi BE" type="error"/>
+                </div>
+            }
+            {saved &&
+                <div>
+                    <Alert message="Przychodzy zostały zapisane poprawnie" type="success"/>
+                </div>
+            }
+            <Button type="dashed" icon={<CaretLeftOutlined/>} onClick={goBack}
+                    style={{
+                        position: 'relative',
+                        marginLeft: '10px',
+                    }}>
+                Powrót do przychodów
+            </Button>
             <Form onFinish={onFinish} {...form}>
                 <Form.List name={"assetsList"}>
                     {(fields, {add, remove}) => (

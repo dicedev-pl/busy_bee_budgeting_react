@@ -1,51 +1,28 @@
-import {Button, Table, Tag} from 'antd';
+import {Alert, Button, Table, Tag} from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
-import React, {useState} from 'react';
-import {AssetsCategory} from "./enums";
+import React, {useEffect, useState} from 'react';
+import {AssetsCategory, AssetsCategoryMessage} from "./enums";
 import './Assets.css'
 import AddAssets from "./add/AddAssets";
+import useGetAssets from "./hooks/useGetAssets";
 
 
 const {Column} = Table;
 
-interface DataType {
-    key: React.Key;
-    id: string;
-    amount: number;
-    incomeDate: string;
-    category: AssetsCategory;
-}
-
 const Assets: React.FC<{ userToken: string }> = ({userToken}) => {
     const [addView, setAddView] = useState(false)
+    const { error, assets, getAssets} = useGetAssets();
 
-    const data: DataType[] = [
-        {
-            "key": "4c158b34-4368-4310-a71c-4c9197054a72",
-            "id": "4c158b34-4368-4310-a71c-4c9197054a72",
-            "amount": 300,
-            "incomeDate": "2010-02-03T15:00:00.001Z",
-            "category": AssetsCategory.SALARY
-        },
-        {
-            "key": "5c158b34-4368-4310-a71c-4c9197054a72",
-            "id": "5c158b34-4368-4310-a71c-4c9197054a72",
-            "amount": 3000,
-            "incomeDate": "2010-02-03T15:10:00.001Z",
-            "category": AssetsCategory.RENT
-        },
-        {
-            "key": "6c158b34-4368-4310-a71c-4c9197054a72",
-            "id": "6c158b34-4368-4310-a71c-4c9197054a72",
-            "amount": 3000,
-            "incomeDate": "2010-02-23T17:00:00.001Z",
-            "category": AssetsCategory.BONUS
-        },
-    ];
-
+    useEffect(() => {
+        getAssets(userToken);
+    }, [])
 
     const gotoAddView = () => {
         setAddView(true);
+    }
+
+    const gotoMainView = () => {
+        setAddView(false);
     }
 
     return (
@@ -54,17 +31,23 @@ const Assets: React.FC<{ userToken: string }> = ({userToken}) => {
                 <Button type="primary" onClick={gotoAddView} icon={<PlusOutlined/>}>
                     Dodaj
                 </Button>
-                <Table dataSource={data}>
+                {error &&
+                    <div>
+                        <Alert message="Wystąpił problem" type="error"/>
+                        <Alert message="Sprawdź logi BE" type="error"/>
+                    </div>
+                }
+                <Table dataSource={assets}>
                     <Column title="Kategoria" dataIndex="category" key="category"
                             render={(category) => {
                                 let color = 'green';
-                                if (category === 1) color = 'blue';
-                                if (category === 2) color = 'grey';
-                                if (category === 3) color = 'lightblue';
-                                if (category === 4) color = 'red';
+                                if (category === AssetsCategory.RENT) color = 'blue';
+                                if (category === AssetsCategory.BONUS) color = 'grey';
+                                if (category === AssetsCategory.LOAN_RETURNED) color = 'lightblue';
+                                if (category === AssetsCategory.OTHER) color = 'red';
                                 return (
                                     <Tag color={color} key={category}>
-                                        {AssetsCategory[category]}
+                                        {AssetsCategoryMessage[category]}
                                     </Tag>
                                 );
                             }}
@@ -74,7 +57,7 @@ const Assets: React.FC<{ userToken: string }> = ({userToken}) => {
                 </Table>
             </>) || (
             <>
-                <AddAssets userToken={userToken} />
+                <AddAssets userToken={userToken} setMainView={gotoMainView} />
             </>
         )
     )
